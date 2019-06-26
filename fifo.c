@@ -59,7 +59,7 @@ int main()
     isCreate = &isCreate_;
     for (int i = 0; i < size; i++)
     {
-        //INSERIR OS ITEMS NO ARRAY
+        //PARA INSERIR OS ITEMS NO ARRAY É SÓ TROCAR "i" PELO VALOR QUE VOCE QUISER
         inserir(fila, i, tail, size, isCreate);
         printf("%d\n", *tail);
     }
