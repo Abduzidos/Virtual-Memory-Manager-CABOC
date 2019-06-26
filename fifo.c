@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define N 8
-void criarfila(int *, int *);
 int inserir(int *, int, int *, const int, int *);
 int remover(int *, int *, int *);
 int isVazia(int *, int *);
-
 int inserir(int *fila, int info, int *tail, const int size, int *isCreate)
 {
     if (*tail == size)
@@ -61,9 +58,8 @@ int main()
     {
         //PARA INSERIR OS ITEMS NO ARRAY É SÓ TROCAR "i" PELO VALOR QUE VOCE QUISER
         inserir(fila, i, tail, size, isCreate);
-        printf("%d\n", *tail);
     }
-    while(isVazia(head,tail)){
+    while(isVazia(head,tail)){ //AQUI ELE REMOVE TODOS OS ITEMS, SÓ PARA DEMOSRAÇÃO
        temp= remover(fila,tail,head);
        printf("%d",temp);
     }
