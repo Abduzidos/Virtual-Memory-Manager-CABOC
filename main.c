@@ -35,6 +35,7 @@ int main(void)
     int pageFaults = 0;
     int firstPageTable = 0;
     int memory[FRAME_SIZE][FRAME_SIZE];
+    int tlbLen = 0;
 
     for (int x = 0; x < TLB_LENGTH; x++)
     {
@@ -86,6 +87,25 @@ int main(void)
                 }
                 // Insert to TLB
                 // Você precisa inserir + também deve garantir que nao dara um segmentation fault
+
+                if (tlbLen < TLB_LENGTH)
+                {
+                    pageTLB[tlbLen] = page;
+                    frameTLB[tlbLen] = hasHitted;
+                    tlbLen++;
+                }
+                else
+                { // lista ta cheia
+                    // desloca todo mundo pro inicio
+                    for (int shift = 1; shift < TLB_LENGTH; shift++)
+                    {
+                        pageTLB[shift - 1] = pageTLB[shift];
+                        frameTLB[shift - 1] = frameTLB[shift];
+                    }
+                    // adiciona ao fim fazendo
+                    pageTLB[TLB_LENGTH - 1] = page;
+                    frameTLB[TLB_LENGTH - 1] = hasHitted;
+                }
             }
             // Nao achou nem no tlb nem na table
             if (!hasHitted)
@@ -102,6 +122,24 @@ int main(void)
 
                 // Insert to TLB
                 // Você precisa inserir + também deve garantir que nao dara um segmentation fault
+                if (tlbLen < TLB_LENGTH)
+                {
+                    pageTLB[tlbLen] = page;
+                    frameTLB[tlbLen] = hasHitted;
+                    tlbLen++;
+                }
+                else
+                { // lista ta cheia
+                    // desloca todo mundo pro inicio
+                    for (int shift = 1; shift < TLB_LENGTH; shift++)
+                    {
+                        pageTLB[shift - 1] = pageTLB[shift];
+                        frameTLB[shift - 1] = frameTLB[shift];
+                    }
+                    // adiciona ao fim fazendo
+                    pageTLB[TLB_LENGTH - 1] = page;
+                    frameTLB[TLB_LENGTH - 1] = hasHitted;
+                }
             }
         }
     }
