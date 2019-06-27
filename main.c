@@ -86,6 +86,11 @@ int main(void)
                 }
                 // Insert to TLB
                 // Você precisa inserir + também deve garantir que nao dara um segmentation fault
+                if (x < TLB_LENGTH)
+                {
+                    pageTLB[x] = page;
+                    frameTLB[x] = hasHitted;
+                }
             }
             // Nao achou nem no tlb nem na table
             if (!hasHitted)
@@ -102,6 +107,7 @@ int main(void)
 
                 // Insert to TLB
                 // Você precisa inserir + também deve garantir que nao dara um segmentation fault
+                
             }
         }
     }
