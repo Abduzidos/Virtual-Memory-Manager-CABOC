@@ -84,6 +84,8 @@ int main(void)
                 {
                     hasHitted = pageFrame[x];
                 }
+                // Insert to TLB
+                // Você precisa inserir + também deve garantir que nao dara um segmentation fault
             }
             // Nao achou nem no tlb nem na table
             if (!hasHitted)
@@ -97,6 +99,9 @@ int main(void)
                     memory[firstPageTable][i];
                     debugHigh(" %d ", buffer[i]);
                 }
+
+                // Insert to TLB
+                // Você precisa inserir + também deve garantir que nao dara um segmentation fault
             }
         }
     }
