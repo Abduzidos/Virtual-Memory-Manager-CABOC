@@ -12,6 +12,11 @@
 #define OFFSET_CLEAN 0xFF
 #define TLB_LENGTH 16
 #define FRAME_SIZE 256
+#define NUMBER_OF_FRAMES 128
+
+int ram_memory[NUMBER_OF_FRAMES][FRAME_SIZE];
+int frameNaMemoria = 0;
+
 
 char *readBacking(int pageNumber, FILE *backing_store);
 
@@ -30,6 +35,7 @@ int main(void)
     int frameTLB[TLB_LENGTH];
     int tlbHits = 0;
     int pageFaults = 0;
+    int count = 0;
 
     // Read all the address file
     // Coloco num vetor de address
@@ -68,6 +74,9 @@ int main(void)
         {
             buffer = readBacking(page, backing_store);
             pageFaults++;
+            pageTLB[count] = page;
+            frameTLB[count] = buffer;
+            count++;
             debugHigh("the readed backing %s", buffer);
         }
     }
@@ -82,6 +91,7 @@ int main(void)
 char *readBacking(int pageNumber, FILE *backing_store)
 {
     char buffer[FRAME_SIZE];
+
     if (fseek(backing_store, pageNumber * FRAME_SIZE, SEEK_SET) != 0)
     {
         fprintf(stderr, "Error while searching for page\n");
@@ -91,6 +101,14 @@ char *readBacking(int pageNumber, FILE *backing_store)
     {
         fprintf(stderr, "Error while reading the line\n");
     }
+
+    for (int i = 0; i < FRAME_SIZE; i++) 
+    {
+        ram_memory[frameNaMemoria][i] = buffer[i];
+    }
+    
+    frameNaMemoria++;
+
     return buffer;
 }
 
