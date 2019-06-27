@@ -13,7 +13,7 @@
 #define TLB_LENGTH 16
 #define FRAME_SIZE 256
 
-char *readBacking(int pageNumber, FILE *backing_store);
+void readBacking(int pageNumber, FILE *backing_store, char *buffer);
 
 void debugHigh(const char *format, ...);
 void debugMedium(const char *format, ...);
@@ -28,8 +28,19 @@ int main(void)
 
     int pageTLB[TLB_LENGTH];
     int frameTLB[TLB_LENGTH];
+
+    int pageTable[FRAME_SIZE];
+    int pageFrame[FRAME_SIZE];
     int tlbHits = 0;
     int pageFaults = 0;
+    int firstPageTable = 0;
+    int memory[FRAME_SIZE][FRAME_SIZE];
+
+    for (int x = 0; x < TLB_LENGTH; x++)
+    {
+        pageTLB[x] = 0;
+        frameTLB[x] = 0;
+    }
 
     // Read all the address file
     // Coloco num vetor de address
@@ -57,18 +68,36 @@ int main(void)
             // hit check
             if (page == pageTLB[indexTLB])
             {
-                hasHitted = 1;
+                hasHitted = frameTLB[indexTLB];
                 tlbHits++;
             }
         }
 
-        char *buffer;
+        char buffer[FRAME_SIZE];
         // Se nao tava no TLB procurar no backing
         if (!hasHitted)
         {
-            buffer = readBacking(page, backing_store);
-            pageFaults++;
-            debugHigh("the readed backing %s", buffer);
+            // Procura no pageTable
+            for (int x = 0; x < firstPageTable; x++)
+            {
+                if (hasHitted == pageTable[x])
+                {
+                    hasHitted = pageFrame[x];
+                }
+            }
+            // Nao achou nem no tlb nem na table
+            if (!hasHitted)
+            {
+                readBacking(page, backing_store, buffer);
+                pageFaults++;
+                hasHitted = firstPageTable - 1;
+                debugHigh("\nthe readed page %d backing", page);
+                for (int i = 0; i < FRAME_SIZE; i++)
+                {
+                    memory[firstPageTable][i];
+                    debugHigh(" %d ", buffer[i]);
+                }
+            }
         }
     }
 
@@ -79,9 +108,8 @@ int main(void)
     return (0);
 }
 
-char *readBacking(int pageNumber, FILE *backing_store)
+void readBacking(int pageNumber, FILE *backing_store, char *buffer)
 {
-    char buffer[FRAME_SIZE];
     if (fseek(backing_store, pageNumber * FRAME_SIZE, SEEK_SET) != 0)
     {
         fprintf(stderr, "Error while searching for page\n");
@@ -91,7 +119,6 @@ char *readBacking(int pageNumber, FILE *backing_store)
     {
         fprintf(stderr, "Error while reading the line\n");
     }
-    return buffer;
 }
 
 void debugHigh(const char *format, ...)
